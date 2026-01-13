@@ -1,10 +1,14 @@
 package com.project.back_end.models;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 @Document(collection = "prescriptions")
 public class Prescription {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
     @NotNull
     @Size(min = 3, max = 100)
@@ -25,7 +29,7 @@ public class Prescription {
 
     public Prescription() {}
 
-    public Prescription(patientName, medication, dosage, doctorNotes, appointmentId) {
+    public Prescription(String patientName, String medication, String dosage, String doctorNotes, long appointmentId) {
         this.patientName = patientName;
         this.medication = medication;
         this.dosage = dosage;
@@ -33,11 +37,11 @@ public class Prescription {
         this.appointmentId = appointmentId;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
