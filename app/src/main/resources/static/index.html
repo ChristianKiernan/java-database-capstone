@@ -1,104 +1,73 @@
 <!-- index.html -->
 <!-- 
-
-Step-by-Step Explanation of `index.html`.
 This file allows users to select a role (Admin, Patient, Doctor) 
 and triggers modal-based login functionality.
+-->
 
-1. Label the File
+<!DOCTYPE html>
+<html lang="en">
 
-   * Add a comment at the very top to identify the file as `index.html`. This helps developers stay organized.
+<head>
+    <!-- Set character encoding -->
+    <meta charset="UTF-8">
 
-2. Declare Document Type
+    <!-- Page title -->
+    <title>Select Role</title>
 
-   * Use the declaration for HTML5 so browsers know how to render the page correctly.
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/logo/Logo.png" type="image/png">
 
-3. Start the HTML Document
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
 
-   * Begin the HTML structure and set the document language to English to improve accessibility and SEO `lang="en"`.
+    <!-- JavaScript files (deferred) -->
+    <script src="./js/util.js" defer></script>
+    <script src="./js/render.js" defer></script>
+    <script src="./js/components/header.js" defer></script>
+    <script src="./js/components/footer.js" defer></script>
+</head>
 
-4. Head Section (Metadata and Resources)
+<body>
 
-   * Open the `<head>` section which contains settings and links that don’t show up visually.
+    <!-- Main container -->
+    <div class="container">
 
-5. Set Character Encoding
+        <!-- Wrapper for page structure -->
+        <div class="wrapper">
 
-   * Specify UTF-8 encoding to support most global characters and symbols.
+            <!-- Header placeholder -->
+            <div id="header"></div>
 
-6. Set the Page Title
+            <!-- Main content -->
+            <main>
+                <h1>Select Your Role</h1>
 
-   * Give the page a name (e.g., "Select Role") that appears on the browser tab.
+                <div class="role-buttons">
+                    <button id="adminBtn">Admin</button>
+                    <button id="patientBtn">Patient</button>
+                    <button id="doctorBtn">Doctor</button>
+                </div>
+            </main>
 
-7. Add a Favicon
+            <!-- Footer placeholder -->
+            <div id="footer"></div>
 
-   * Link to an icon (like a logo) that will appear in the browser tab from the address `href="../assets/images/logo/Logo.png"`
+        </div>
+    </div>
 
-8. Link Stylesheets
+    <!-- Modal structure -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <button id="closeModal" class="close-btn">&times;</button>
+            <div id="modal-content">
+                <!-- Dynamic login form will be injected here -->
+            </div>
+        </div>
+    </div>
 
-   * Add a page-specific stylesheet for layout and design.
-   * Also include a global stylesheet for shared site-wide styles.
+    <!-- Page-specific logic -->
+    <script type="module" src="../js/index.js" defer></script>
 
-   HINT:
-      `<link rel="stylesheet" href="../assets/css/index.css">`
-      `<link rel="stylesheet" href="../assets/css/style.css">`
-
-9. Add JavaScript Files with `defer`
-
-   * Link utility and rendering JavaScript files (e.g., `util.js`, `render.js`).
-   * Include scripts for rendering components like header and footer.
-   * Use the `defer` attribute so they load after the HTML is parsed.
-
-   HINT:
-      `<script src="../js/util.js" defer></script>`
-      `<script src="../js/render.js" defer></script>`
-      `<script src="../js/components/header.js" defer></script>`
-      `<script src="../js/components/footer.js" defer></script>`
-      
-10. Close the Head and Open the Body
-
-    * Wrap up metadata and begin the visible page content.
-
-11. Create a Container
-
-    * Add a main container to hold all page elements and apply layout constraints.
-
-12. Use a Wrapper for Structure
-
-    * Inside the container, add a wrapper to group header, main, and footer sections logically.
-
-13. Insert a Header Placeholder
-
-    * Add a `div` that will be dynamically filled by JavaScript with the site’s header.
-
-14. Define the Main Section
-
-    * Use a semantic `<main>` tag to hold the central content of the page.
-
-15. Add a Heading for Role Selection
-
-    * Display a heading like “Select Your Role” to instruct users.
-
-16. Add Buttons for Roles
-
-    * Create buttons for each role: Admin, Patient, and Doctor.
-    * Assign unique identifiers or `onclick` handlers to them as needed.
-
-17. Insert a Footer Placeholder
-
-    * Add a `div` that will be dynamically filled by JavaScript with the site’s footer.
-
-18. Create a Modal Structure
-
-    * Add a modal overlay for popups (like login forms).
-    * Include a close button and an inner container for dynamic content.
-
-19. Load Page-Specific Logic Module
-
-    * Use a `<script type="module">` tag to load the role selection logic (e.g., `index.js`).
-    * Ensure it’s deferred so it doesn’t block HTML rendering.
-
-20. Close the Body and HTML Tags
-
-    * Properly close all opened tags to complete the document structure.
-
- -->
+</body>
+</html>
