@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 import com.project.back_end.models.Appointment;
 import com.project.back_end.services.AppointmentService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.AppService;
 
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
-    private final Service service;
+    private final AppService service;
 
     @Autowired
-    public AppointmentController(AppointmentService appointmentService, Service service) {
+    public AppointmentController(AppointmentService appointmentService, AppService service) {
         this.appointmentService = appointmentService;
         this.service = service;
     }

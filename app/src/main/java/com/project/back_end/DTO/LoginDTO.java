@@ -34,5 +34,9 @@ public class LoginDTO {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getEmail() { return identifier; }
+    
+    public void setEmail(String email) { this.identifier = email; }
 }
 

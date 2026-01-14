@@ -41,6 +41,40 @@ public class TokenService {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
+    public Long extractUserId(String token, String userType) {
+        try {
+            String identifier = extractIdentifier(token);
+    
+            return switch (userType) {
+                case "admin" -> {
+                    var admin = adminRepository.findByUsername(identifier);
+                    yield admin != null ? admin.getId() : null;
+                }
+                case "doctor" -> {
+                    var doctor = doctorRepository.findByEmail(identifier);
+                    yield doctor != null ? doctor.getId() : null;
+                }
+                case "patient" -> {
+                    var patient = patientRepository.findByEmail(identifier);
+                    yield patient != null ? patient.getId() : null;
+                }
+                default -> null;
+            };
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String extractEmail(String token) {
+        return extractIdentifier(token);
+    }
+    
+    public String extractUser(String token) {
+        return extractIdentifier(token);
+    }
+    
+    
+
     /**
      * Generates a JWT token for a given user's identifier.
      * identifier = username (Admin) OR email (Doctor/Patient)

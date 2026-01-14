@@ -104,7 +104,12 @@ public class AppointmentService {
             // Ensure patient attempting to cancel owns the appointment
             // (TokenService extraction depends on your implementation; adjust as needed.)
             
-            Long patientIdFromToken = tokenService.extractUserId(token);
+            Long patientIdFromToken = tokenService.extractUserId(token, "patient");
+            if (patientIdFromToken == null) {
+                res.put("message", "Unauthorized.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
+            }
+
             if (appointment.getPatient() == null || appointment.getPatient().getId() == null
                     || !appointment.getPatient().getId().equals(patientIdFromToken)) {
                 res.put("message", "Unauthorized to cancel this appointment.");
@@ -129,8 +134,13 @@ public class AppointmentService {
     public Map<String, Object> getAppointment(String pname, LocalDate date, String token) {
         Map<String, Object> res = new HashMap<>();
 
-        // Derive doctorId from token (adjust if your token contains a different claim)
-        Long doctorId = tokenService.extractUserId(token);
+        // Derive doctorId from token
+        Long doctorId = tokenService.extractUserId(token, "doctor");
+        if (doctorId == null) {
+            res.put("message", "Unauthorized.");
+            return res;
+        }
+
 
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);

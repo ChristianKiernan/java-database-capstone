@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 
 import com.project.back_end.models.Prescription;
 import com.project.back_end.services.PrescriptionService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.AppService;
 
 @RestController
 @RequestMapping("${api.path}prescription")
 public class PrescriptionController {
 
     private final PrescriptionService prescriptionService;
-    private final Service service;
+    private final AppService service;
 
-    public PrescriptionController(PrescriptionService prescriptionService, Service service) {
+    public PrescriptionController(PrescriptionService prescriptionService, AppService service) {
         this.prescriptionService = prescriptionService;
         this.service = service;
     }

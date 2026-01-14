@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.project.back_end.DTO.Login;
+import com.project.back_end.DTO.LoginDTO;
 import com.project.back_end.models.Admin;
 import com.project.back_end.models.Appointment;
 import com.project.back_end.models.Doctor;
@@ -19,8 +19,9 @@ import com.project.back_end.repo.AdminRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
 
+
 @Service
-public class Service {
+public class AppService {
 
     private final TokenService tokenService;
     private final AdminRepository adminRepository;
@@ -29,7 +30,7 @@ public class Service {
     private final DoctorService doctorService;
     private final PatientService patientService;
 
-    public Service(
+    public AppService(
             TokenService tokenService,
             AdminRepository adminRepository,
             DoctorRepository doctorRepository,
@@ -175,7 +176,7 @@ public class Service {
     /**
      * Validate patient login (email + password) and return token if correct.
      */
-    public ResponseEntity<Map<String, String>> validatePatientLogin(Login login) {
+    public ResponseEntity<Map<String, String>> validatePatientLogin(LoginDTO login) {
         Map<String, String> res = new HashMap<>();
         try {
             if (login == null || login.getEmail() == null || login.getPassword() == null) {
@@ -205,7 +206,7 @@ public class Service {
      */
     public ResponseEntity<Map<String, Object>> filterPatient(String condition, String name, String token) {
         try {
-            String email = tokenService.extractUser(token); // assumes your TokenService can do this
+            String email = tokenService.extractIdentifier(token);
             Patient patient = patientRepository.findByEmail(email);
 
             if (patient == null) {

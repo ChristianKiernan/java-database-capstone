@@ -7,19 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.project.back_end.DTO.Login;
+import com.project.back_end.DTO.LoginDTO;
 import com.project.back_end.models.Patient;
 import com.project.back_end.services.PatientService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.AppService;
 
 @RestController
 @RequestMapping("/patient")
 public class PatientController {
 
     private final PatientService patientService;
-    private final Service service;
+    private final AppService service;
 
-    public PatientController(PatientService patientService, Service service) {
+    public PatientController(PatientService patientService, AppService service) {
         this.patientService = patientService;
         this.service = service;
     }
@@ -66,7 +66,7 @@ public class PatientController {
     // 3) Patient Login
     // POST /patient/login
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Login login) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO login) {
         return service.validatePatientLogin(login);
     }
 

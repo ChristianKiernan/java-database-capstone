@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.back_end.models.Admin;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.AppService;
 
 @RestController
 @RequestMapping("${api.path}" + "admin")
 public class AdminController {
 
-    private final Service service;
+    private final AppService service;
 
     @Autowired
-    public AdminController(Service service) {
+    public AdminController(AppService service) {
         this.service = service;
     }
 

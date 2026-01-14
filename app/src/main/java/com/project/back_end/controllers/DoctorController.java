@@ -10,19 +10,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.project.back_end.DTO.Login;
+import com.project.back_end.DTO.LoginDTO;
 import com.project.back_end.models.Doctor;
 import com.project.back_end.services.DoctorService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.AppService;
 
 @RestController
 @RequestMapping("${api.path}" + "doctor")
 public class DoctorController {
 
     private final DoctorService doctorService;
-    private final Service service;
+    private final AppService service;
 
-    public DoctorController(DoctorService doctorService, Service service) {
+    public DoctorController(DoctorService doctorService, AppService service) {
         this.doctorService = doctorService;
         this.service = service;
     }
@@ -83,7 +83,7 @@ public class DoctorController {
     // 4) Doctor Login
     // POST /{api.path}doctor/login
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> doctorLogin(@RequestBody Login login) {
+    public ResponseEntity<Map<String, String>> doctorLogin(@RequestBody LoginDTO login) {
         return doctorService.validateDoctor(login);
     }
 

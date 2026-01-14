@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.project.back_end.DTO.Login;
+import com.project.back_end.DTO.LoginDTO;
 import com.project.back_end.models.Appointment;
 import com.project.back_end.models.Doctor;
 import com.project.back_end.repo.AppointmentRepository;
@@ -135,7 +135,7 @@ public class DoctorService {
      * Validate doctor login. Returns token if valid.
      */
     @Transactional(readOnly = true)
-    public ResponseEntity<Map<String, String>> validateDoctor(Login login) {
+    public ResponseEntity<Map<String, String>> validateDoctor(LoginDTO login) {
         Map<String, String> res = new HashMap<>();
 
         try {
@@ -157,7 +157,7 @@ public class DoctorService {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(res);
             }
 
-            String token = tokenService.generateToken(doctor.getId(), "doctor");
+            String token = tokenService.generateToken(doctor.getEmail(), "doctor");
             res.put("token", token);
             res.put("message", "Login successful.");
             return ResponseEntity.ok(res);
