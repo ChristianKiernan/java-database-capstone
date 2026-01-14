@@ -15,7 +15,7 @@ public class Prescription {
     private String patientName;
 
     @NotNull
-    private long appointmentId;
+    private Long appointmentId;
 
     @NotNull
     @Size(min = 3, max = 100)
