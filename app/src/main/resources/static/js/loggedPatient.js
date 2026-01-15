@@ -2,7 +2,6 @@
 import { getDoctors } from './services/doctorServices.js';
 import { createDoctorCard } from './components/doctorCard.js';
 import { filterDoctors } from './services/doctorServices.js';
-import { bookAppointment } from './services/appointmentRecordService.js';
 
 
 document.addEventListener("DOMContentLoaded", () => {

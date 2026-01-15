@@ -5,9 +5,9 @@
   - Adds a new doctor via modal form
 */
 
-import { openModal } from "../components/modals.js";
-import { getDoctors, filterDoctors, saveDoctor } from "../services/doctorServices.js";
-import { createDoctorCard } from "../components/doctorCard.js";
+import { openModal } from "/js/components/modals.js";
+import { getDoctors, filterDoctors, saveDoctor } from "/js/services/doctorServices.js";
+import { createDoctorCard } from "/js/components/doctorCard.js";
 
 /* Attach a click listener to the "Add Doctor" button */
 document.addEventListener("DOMContentLoaded", () => {
@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Attach search / filter listeners
   const searchBar = document.getElementById("searchBar");
-  const filterTime = document.getElementById("filterTime");
-  const filterSpecialty = document.getElementById("filterSpecialty");
+  const filterTime = document.getElementById("timeSort");
+  const filterSpecialty = document.getElementById("specialtyFilter");
 
   if (searchBar) searchBar.addEventListener("input", filterDoctorsOnChange);
   if (filterTime) filterTime.addEventListener("change", filterDoctorsOnChange);
@@ -51,8 +51,8 @@ async function loadDoctorCards() {
 async function filterDoctorsOnChange() {
   try {
     const name = document.getElementById("searchBar")?.value?.trim() || null;
-    const time = document.getElementById("filterTime")?.value || null;
-    const specialty = document.getElementById("filterSpecialty")?.value || null;
+    const time = document.getElementById("timeSort")?.value || null;
+    const specialty = document.getElementById("specialtyFilter")?.value || null;
 
     const doctors = await filterDoctors(name, time, specialty);
 
@@ -96,11 +96,11 @@ function renderDoctorCards(doctors) {
 */
 window.adminAddDoctor = async function adminAddDoctor() {
   try {
-    const name = document.getElementById("docName")?.value?.trim();
-    const email = document.getElementById("docEmail")?.value?.trim();
-    const phone = document.getElementById("docPhone")?.value?.trim();
-    const password = document.getElementById("docPassword")?.value?.trim();
-    const specialty = document.getElementById("docSpecialty")?.value?.trim();
+    const name = document.getElementById("doctorName")?.value?.trim();
+    const email = document.getElementById("doctorEmail")?.value?.trim();
+    const phone = document.getElementById("doctorPhone")?.value?.trim();
+    const password = document.getElementById("doctorPassword")?.value?.trim();
+    const specialty = document.getElementById("specialization")?.value?.trim();
 
     // Collect checkbox values for availability
     const availability = Array.from(
@@ -131,4 +131,4 @@ window.adminAddDoctor = async function adminAddDoctor() {
     console.error(err);
     alert("Something went wrong while adding the doctor.");
   }
-};
+}

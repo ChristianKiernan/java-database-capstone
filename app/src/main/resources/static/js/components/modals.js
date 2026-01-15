@@ -129,4 +129,6 @@ export function openModal(type) {
   }
 }
 
+ window.openModal = openModal;        
+
 

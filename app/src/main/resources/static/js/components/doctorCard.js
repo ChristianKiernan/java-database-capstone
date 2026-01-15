@@ -40,7 +40,7 @@ Import the overlay function for booking appointments from loggedPatient.js
   Return the complete doctor card element
 */
 
-import { showBookingOverlay } from "../loggedPatient.js";
+import { showBookingOverlay } from "./bookingOverlay.js";
 import { deleteDoctor } from "../services/doctorServices.js";
 import { getPatientData } from "../services/patientServices.js";
 
