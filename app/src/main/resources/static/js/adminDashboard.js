@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
 */
 async function loadDoctorCards() {
   try {
-    const doctors = await getDoctors();
+    const result = await getDoctors();
+    const doctors = result?.doctors ?? [];
     renderDoctorCards(doctors);
   } catch (err) {
     console.error("Error loading doctors:", err);
@@ -54,14 +55,16 @@ async function filterDoctorsOnChange() {
     const time = document.getElementById("timeSort")?.value || null;
     const specialty = document.getElementById("specialtyFilter")?.value || null;
 
-    const doctors = await filterDoctors(name, time, specialty);
+    const result = await filterDoctors(name, time, specialty);
+    const doctors = result?.doctors ?? [];
 
-    if (doctors && doctors.length > 0) {
-      renderDoctorCards(doctors);
+    if (doctors.length > 0) {
+        renderDoctorCards(doctors);
     } else {
-      const contentDiv = document.getElementById("content");
-      if (contentDiv) contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
+        const contentDiv = document.getElementById("content");
+        if (contentDiv) contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
     }
+
   } catch (err) {
     console.error(err);
     alert("Unable to filter doctors. Please try again.");

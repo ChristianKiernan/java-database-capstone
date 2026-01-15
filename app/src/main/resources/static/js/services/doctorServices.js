@@ -84,27 +84,23 @@ export async function saveDoctor(doctor, token) {
  */
 export async function filterDoctors(name, time, specialty) {
   try {
-    const params = new URLSearchParams();
-    if (name) params.append("name", name);
-    if (time) params.append("time", time);
-    if (specialty) params.append("specialty", specialty);
+    // Backend expects path params: /filter/{name}/{time}/{speciality}
+    // Use "null" for any missing segment (your controller normalizes these)
+    const n = name && name.trim().length > 0 ? encodeURIComponent(name.trim()) : "null";
+    const t = time && time.trim().length > 0 ? encodeURIComponent(time.trim()) : "null";
+    const s = specialty && specialty.trim().length > 0 ? encodeURIComponent(specialty.trim()) : "null";
 
-    const url = params.toString()
-      ? `${DOCTOR_API}/filter?${params.toString()}`
-      : DOCTOR_API;
+    const url = `${DOCTOR_API}/filter/${n}/${t}/${s}`;
 
-    const res = await fetch(url);
+    const res = await fetch(url, { method: "GET" });
     if (!res.ok) throw new Error("Failed to filter doctors");
 
     const data = await res.json();
-
-    if (Array.isArray(data)) return data;
-    if (data && Array.isArray(data.doctors)) return data.doctors;
-
-    return [];
+    return data; // controller returns Map<String,Object>, usually { doctors: [...] }
   } catch (err) {
     console.error("Error filtering doctors:", err);
     alert("Unable to filter doctors. Please try again.");
-    return [];
+    return { doctors: [] };
   }
 }
+
