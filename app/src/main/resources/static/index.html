@@ -15,11 +15,12 @@ and triggers modal-based login functionality.
     <title>Select Role</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="../assets/images/logo/Logo.png" type="image/png">
+    <link rel="icon" href="/assets/images/logo/logo.png" type="image/png">
 
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="./assets/css/index.css">
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/index.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
 
     <!-- JavaScript files (deferred) -->
     <script src="./js/util.js" defer></script>
@@ -28,7 +29,7 @@ and triggers modal-based login functionality.
     <script src="./js/components/footer.js" defer></script>
 </head>
 
-<body>
+<body onload="renderContent()">
 
     <!-- Main container -->
     <div class="container">
@@ -40,8 +41,8 @@ and triggers modal-based login functionality.
             <div id="header"></div>
 
             <!-- Main content -->
-            <main>
-                <h1>Select Your Role</h1>
+            <main class="main-content">
+                <h2>Select Your Role</h2>
 
                 <div class="role-buttons">
                     <button id="adminBtn">Admin</button>
