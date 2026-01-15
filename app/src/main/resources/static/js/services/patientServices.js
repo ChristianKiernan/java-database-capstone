@@ -15,7 +15,7 @@ const PATIENT_API = API_BASE_URL + "/patient";
 export async function patientSignup(data) {
   try {
     // Send signup request
-    const res = await fetch(`${PATIENT_API}/signup`, {
+    const res = await fetch(`${PATIENT_API}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

@@ -162,7 +162,7 @@
   }
   
 
-  .modal {
+  .legacy-modal {
     display: none;
     position: fixed;
     z-index: 999;
@@ -174,7 +174,7 @@
     background-color: rgba(0,0,0,0.6);
   }
   
-  .modal-content {
+  .legacy-modal-content {
     background-color: white;
     margin: auto;
     padding: 30px;

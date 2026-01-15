@@ -1,5 +1,15 @@
-// modals.js
+// app/src/main/resources/static/js/components/modals.js
+
 export function openModal(type) {
+  const modal = document.getElementById("modal");
+  const modalBody = document.getElementById("modal-body");
+  const closeBtn = document.getElementById("closeModal");
+
+  if (!modal || !modalBody || !closeBtn) {
+    console.error("Modal elements missing:", { modal, modalBody, closeBtn });
+    return;
+  }
+
   let modalContent = "";
 
   if (type === "addDoctor") {
@@ -37,14 +47,14 @@ export function openModal(type) {
         </div>
       </div>
 
-      <button class="dashboard-btn" id="saveDoctorBtn">Save</button>
+      <button class="dashboard-btn" id="saveDoctorBtn" type="button">Save</button>
     `;
   } else if (type === "patientLogin") {
     modalContent = `
       <h2>Patient Login</h2>
       <input type="text" id="email" placeholder="Email" class="input-field">
       <input type="password" id="password" placeholder="Password" class="input-field">
-      <button class="dashboard-btn" id="loginBtn">Login</button>
+      <button class="dashboard-btn" id="loginBtn" type="button">Login</button>
     `;
   } else if (type === "patientSignup") {
     modalContent = `
@@ -54,47 +64,39 @@ export function openModal(type) {
       <input type="password" id="password" placeholder="Password" class="input-field">
       <input type="text" id="phone" placeholder="Phone" class="input-field">
       <input type="text" id="address" placeholder="Address" class="input-field">
-      <button class="dashboard-btn" id="signupBtn">Signup</button>
+      <button class="dashboard-btn" id="signupBtn" type="button">Signup</button>
     `;
   } else if (type === "adminLogin") {
     modalContent = `
       <h2>Admin Login</h2>
       <input type="text" id="username" name="username" placeholder="Username" class="input-field">
       <input type="password" id="password" name="password" placeholder="Password" class="input-field">
-      <button class="dashboard-btn" id="adminLoginBtn">Login</button>
+      <button class="dashboard-btn" id="adminLoginBtn" type="button">Login</button>
     `;
   } else if (type === "doctorLogin") {
     modalContent = `
       <h2>Doctor Login</h2>
       <input type="text" id="email" placeholder="Email" class="input-field">
       <input type="password" id="password" placeholder="Password" class="input-field">
-      <button class="dashboard-btn" id="doctorLoginBtn">Login</button>
+      <button class="dashboard-btn" id="doctorLoginBtn" type="button">Login</button>
     `;
   }
 
-  const modalBody = document.getElementById("modal-body");
-  const modal = document.getElementById("modal");
-  const closeBtn = document.getElementById("closeModal");
-
-  if (!modalBody || !modal || !closeBtn) {
-    console.error("❌ Modal elements not found", { modalBody, modal, closeBtn });
-    return;
-  }
-
+  // Inject content + show modal (matches your HTML/CSS: uses .hidden)
   modalBody.innerHTML = modalContent;
   modal.classList.remove("hidden");
 
+  // Close handler
   closeBtn.onclick = () => {
     modal.classList.add("hidden");
+    modalBody.innerHTML = "";
   };
 
-  // ✅ Bind handlers safely via window.*
+  // Bind handlers safely via window.*
   if (type === "patientSignup") {
     const btn = document.getElementById("signupBtn");
     if (btn && typeof window.signupPatient === "function") {
       btn.addEventListener("click", window.signupPatient);
-    } else {
-      console.warn("⚠️ window.signupPatient is not defined");
     }
   }
 
@@ -102,8 +104,6 @@ export function openModal(type) {
     const btn = document.getElementById("loginBtn");
     if (btn && typeof window.loginPatient === "function") {
       btn.addEventListener("click", window.loginPatient);
-    } else {
-      console.warn("⚠️ window.loginPatient is not defined");
     }
   }
 
@@ -111,8 +111,6 @@ export function openModal(type) {
     const btn = document.getElementById("saveDoctorBtn");
     if (btn && typeof window.adminAddDoctor === "function") {
       btn.addEventListener("click", window.adminAddDoctor);
-    } else {
-      console.warn("⚠️ window.adminAddDoctor is not defined");
     }
   }
 
@@ -120,8 +118,6 @@ export function openModal(type) {
     const btn = document.getElementById("adminLoginBtn");
     if (btn && typeof window.adminLoginHandler === "function") {
       btn.addEventListener("click", window.adminLoginHandler);
-    } else {
-      console.warn("⚠️ window.adminLoginHandler is not defined");
     }
   }
 
@@ -129,9 +125,8 @@ export function openModal(type) {
     const btn = document.getElementById("doctorLoginBtn");
     if (btn && typeof window.doctorLoginHandler === "function") {
       btn.addEventListener("click", window.doctorLoginHandler);
-    } else {
-      console.warn("⚠️ window.doctorLoginHandler is not defined");
     }
   }
 }
+
 

@@ -59,12 +59,15 @@ with search, filter, and modal functionality.
     </div>
   </div>
 
-  <div id="modal" class="modal hidden">
-    <span id="closeModal" class="close">&times;</span>
-    <div id="modal-body"></div>
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button id="closeModal" class="close-btn" type="button">&times;</button>
+      <div id="modal-body"></div>
+    </div>
   </div>
 
-  <script type="module" th:src="@{/js/services/adminDashboard.js}" defer></script>
+
+  <script type="module" th:src="@{/js/adminDashboard.js}" defer></script>
   <script type="module" th:src="@{/js/components/doctorCard.js}" defer></script>
 </body>
 

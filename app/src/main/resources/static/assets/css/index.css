@@ -1,66 +1,54 @@
 /* this is the style sheet file for index.html  */
 
-/* 
-=====================================
- Global Reset (`*`)
-=====================================
-* Remove all default margin and padding.
-* Use `border-box` for sizing to include padding and border in element size.
-*/
+/* -----------------------------
+   Global Reset (`*`)
+   - Remove default margin/padding
+   - border-box sizing
+------------------------------ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 
-=====================================
- Base (`html, body`)
-=====================================
-* Set height to 100% for full viewport layout.
-* Use the 'Roboto' sans-serif font.
-*/
+/* -----------------------------
+   Base (`html, body`)
+   - Full height layout
+   - Roboto font
+------------------------------ */
 html,
 body {
   height: 100%;
   font-family: 'Roboto', sans-serif;
 }
 
-/* 
-=====================================
- Layout Wrapper (`.wrapper`)
-=====================================
-* Vertical flexbox layout.
-* Covers full viewport height.
-*/
+/* -----------------------------
+   Layout Wrapper (`.wrapper`)
+   - Vertical flex layout
+   - Full viewport height
+------------------------------ */
 .wrapper {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
-/* 
-=====================================
- Heading (`h2`)
-=====================================
-* Large, bold heading with elegant font stack.
-*/
+/* -----------------------------
+   Heading (`h2`)
+------------------------------ */
 h2 {
   font-size: 48px;
   margin-bottom: 50px;
   color: #003e3e;
   font-weight: bold;
   font-family: 'Alegreya', 'Roboto', sans-serif;
-  text-align: center;
 }
 
-/* 
-=====================================
- Main Section (`.main-content`)
-=====================================
-* Flexible layout that centers content.
-* Full-screen fixed background image.
-*/
+/* -----------------------------
+   Main Section (`.main-content`)
+   - Centered content
+   - Fullscreen background image
+------------------------------ */
 .main-content {
   flex-grow: 1;
   padding: 40px;
@@ -72,47 +60,47 @@ h2 {
 
   text-align: center;
 
-  background-image: url("../images/backgrounds/main-bg.jpg");
+  /* NOTE: replace file name if your background image differs */
+  /* background-image: url("../images/background.jpg"); */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
-/* 
-=====================================
- Buttons (`button`)
-=====================================
-* Teal green background, white text.
-* Rounded corners and hover effect.
-*/
+/* Optional helper for role buttons layout (fits your HTML structure) */
+.role-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* -----------------------------
+   Buttons (`button`)
+------------------------------ */
 button {
   background-color: #015c5d;
-  color: #ffffff;
+  color: white;
+
   border: none;
   border-radius: 12px;
 
   padding: 10px 20px;
   width: 200px;
+
   margin-top: 10px;
 
   cursor: pointer;
   font-size: 16px;
-  font-family: 'Roboto', sans-serif;
-
-  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
   background-color: #A62B1F;
-  transform: translateY(-2px);
 }
 
-/* 
-=====================================
- Dashboard Buttons (`.dashboard-btn`)
-=====================================
-*/
+/* -----------------------------
+   Dashboard Buttons (`.dashboard-btn`)
+------------------------------ */
 .dashboard-btn {
   background-color: #015c5d;
 }
@@ -121,159 +109,130 @@ button:hover {
   background-color: #003e3e;
 }
 
-/* 
-=====================================
- Header Styles
-=====================================
-*/
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 15px 30px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
-}
-
-.header img.logo {
-  height: 40px;
-}
-
-.header nav a {
-  margin-left: 20px;
-  text-decoration: none;
-  color: #003e3e;
-  font-weight: 500;
-}
-
-.header nav a:hover {
-  text-decoration: underline;
-}
-
-/* 
-=====================================
- Footer Styles
-=====================================
-*/
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 20px;
-  background-color: #003e3e;
-  color: #ffffff;
-  flex-wrap: wrap;
-}
-
-.footer section {
-  margin: 10px 0;
-}
-
-/* Mobile responsive footer */
-@media (max-width: 768px) {
-  .footer {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-/* 
-=====================================
- Modal Styles
-=====================================
-*/
+/* -----------------------------
+   Modal + interactions
+   - Your HTML uses: #modal.modal-overlay.hidden
+   - Close button in HTML: .close-btn (screenshots mention .close)
+------------------------------ */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background-color: rgba(0, 0, 0, 0.6);
-
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  z-index: 1000;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+}
+
+.hidden {
+  display: none;
 }
 
 .modal {
-  background-color: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
   position: relative;
+  width: 90%;
+  max-width: 420px;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  padding: 25px 20px;
 }
 
+/* Style BOTH .close and .close-btn to avoid integration issues */
+.close,
 .close-btn {
   position: absolute;
   top: 10px;
   right: 12px;
 
-  background: none;
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
   border: none;
 
-  font-size: 22px;
+  background: transparent;
+  color: #003e3e;
+
+  font-size: 26px;
+  line-height: 1;
+
   cursor: pointer;
-  color: #333;
 }
 
+.close:hover,
 .close-btn:hover {
-  color: #A62B1F;
+  background: rgba(0, 62, 62, 0.08);
 }
 
-/* 
-=====================================
- Interactive Form Elements
-=====================================
-*/
-.input-field,
-.select-dropdown {
+/* -----------------------------
+   Inputs & form elements
+   - Used by your modal HTML (input-field, select-dropdown, checkbox-group)
+------------------------------ */
+.input-field {
   width: 100%;
-  padding: 10px;
+  max-width: 320px;
+
+  padding: 10px 12px;
   margin: 10px 0;
 
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  border: 1px solid #cfcfcf;
+  border-radius: 10px;
+
+  font-size: 16px;
 }
 
-.input-field:focus,
-.select-dropdown:focus {
+.input-field:focus {
   outline: none;
   border-color: #015c5d;
-  box-shadow: 0 0 0 2px rgba(1, 92, 93, 0.2);
 }
 
-/* 
-=====================================
- Checkbox Group
-=====================================
-*/
+.select-dropdown {
+  width: 100%;
+  max-width: 320px;
+}
+
 .checkbox-group {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+
   margin: 10px 0;
 }
 
-.checkbox-group input {
-  margin-right: 8px;
+/* -----------------------------
+   Footer and Header styles
+   - These apply to markup rendered by header.js/footer.js
+------------------------------ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 15px 40px;
 }
 
-/* 
-=====================================
- Utility Classes
-=====================================
-*/
-.hidden {
-  display: none;
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 20px 40px;
 }
 
-.center-text {
-  text-align: center;
+/* Responsive footer/header layout (mobile) */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer {
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

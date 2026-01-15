@@ -10,16 +10,21 @@ const DOCTOR_API = API_BASE_URL + "/doctor";
 export async function getDoctors() {
   try {
     const res = await fetch(DOCTOR_API);
-
     if (!res.ok) throw new Error("Failed to fetch doctors");
 
     const data = await res.json();
-    return data;
+
+    // Normalize: always return an array
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.doctors)) return data.doctors;
+
+    return [];
   } catch (err) {
     console.error("Error fetching doctors:", err);
     return [];
   }
 }
+
 
 /**
  * Delete a doctor (Admin only)
@@ -80,22 +85,23 @@ export async function saveDoctor(doctor, token) {
 export async function filterDoctors(name, time, specialty) {
   try {
     const params = new URLSearchParams();
-
     if (name) params.append("name", name);
     if (time) params.append("time", time);
     if (specialty) params.append("specialty", specialty);
 
-    const url =
-      params.toString().length > 0
-        ? `${DOCTOR_API}/filter?${params.toString()}`
-        : DOCTOR_API;
+    const url = params.toString()
+      ? `${DOCTOR_API}/filter?${params.toString()}`
+      : DOCTOR_API;
 
     const res = await fetch(url);
-
     if (!res.ok) throw new Error("Failed to filter doctors");
 
     const data = await res.json();
-    return data;
+
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.doctors)) return data.doctors;
+
+    return [];
   } catch (err) {
     console.error("Error filtering doctors:", err);
     alert("Unable to filter doctors. Please try again.");

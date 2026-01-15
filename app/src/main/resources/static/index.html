@@ -1,74 +1,85 @@
 <!-- index.html -->
-<!-- 
-This file allows users to select a role (Admin, Patient, Doctor) 
+<!--
+Step-by-Step Explanation of `index.html`.
+This file allows users to select a role (Admin, Patient, Doctor)
 and triggers modal-based login functionality.
+
+- Uses a container + wrapper layout
+- Injects header/footer dynamically into #header and #footer
+- Provides role buttons with unique IDs for JS event listeners
+- Includes a hidden modal overlay (#modal) with a close button (#closeModal)
+  and a dynamic content region (#modal-body)
+- Loads page scripts with defer (and index.js as a module)
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <!-- Set character encoding -->
-    <meta charset="UTF-8">
+  <!-- Set character encoding -->
+  <meta charset="UTF-8" />
 
-    <!-- Page title -->
-    <title>Select Role</title>
+  <!-- Page title -->
+  <title>Select Role</title>
 
-    <!-- Favicon -->
-    <link rel="icon" href="/assets/images/logo/logo.png" type="image/png">
+  <!-- Favicon -->
+  <!-- NOTE: using a root-relative path so it works from Spring Boot static root -->
+  <link rel="icon" href="/assets/images/logo/logo.png" type="image/png" />
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/css/index.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/index.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 
-
-    <!-- JavaScript files (deferred) -->
-    <script src="./js/util.js" defer></script>
-    <script src="./js/render.js" defer></script>
-    <script src="./js/components/header.js" defer></script>
-    <script src="./js/components/footer.js" defer></script>
+  <!-- JavaScript files (deferred) -->
+  <script src="./js/util.js" defer></script>
+  <script src="./js/render.js" defer></script>
+  <script src="./js/components/header.js" defer></script>
+  <script src="./js/components/footer.js" defer></script>
 </head>
 
-<body onload="renderContent()">
+<body>
 
-    <!-- Main container -->
-    <div class="container">
+  <!-- Main container -->
+  <div class="container">
 
-        <!-- Wrapper for page structure -->
-        <div class="wrapper">
+    <!-- Wrapper for page structure -->
+    <div class="wrapper">
 
-            <!-- Header placeholder -->
-            <div id="header"></div>
+      <!-- Header placeholder (filled by header.js) -->
+      <div id="header"></div>
 
-            <!-- Main content -->
-            <main class="main-content">
-                <h2>Select Your Role</h2>
+      <!-- Main content -->
+      <main class="main-content">
+        <h2>Select Your Role</h2>
 
-                <div class="role-buttons">
-                    <button id="adminBtn">Admin</button>
-                    <button id="patientBtn">Patient</button>
-                    <button id="doctorBtn">Doctor</button>
-                </div>
-            </main>
-
-            <!-- Footer placeholder -->
-            <div id="footer"></div>
-
+        <div class="role-buttons">
+          <!-- Unique IDs used by index.js (supports both id styles, but these match your current HTML) -->
+          <button id="adminLogin" type="button">Admin</button>
+          <button id="doctorLogin" type="button">Doctor</button>
+          <button id="patientLogin" type="button">Patient</button>
         </div>
-    </div>
+      </main>
 
-    <!-- Modal structure -->
-    <div id="modal" class="modal-overlay hidden">
-        <div class="modal">
-            <button id="closeModal" class="close-btn">&times;</button>
-            <div id="modal-body">
-                <!-- Dynamic login form will be injected here -->
-            </div>
-        </div>
-    </div>
+      <!-- Footer placeholder (filled by footer.js) -->
+      <div id="footer"></div>
 
-    <!-- Page-specific logic -->
-    <script type="module" src="./js/services/index.js" defer></script>
+    </div>
+  </div>
+
+  <!-- Modal structure (hidden by default, shown by openModal in modals.js) -->
+  <!-- NOTE: IDs here MUST match modals.js and index.js expectations -->
+  <div id="modal" class="modal-overlay hidden">
+    <div class="modal">
+      <button id="closeModal" class="close-btn" type="button">&times;</button>
+      <div id="modal-body">
+        <!-- Dynamic login/signup/add-doctor content is injected here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Page-specific logic (role selection + openModal triggers + login handlers) -->
+  <script type="module" src="./js/services/index.js" defer></script>
 
 </body>
+
 </html>
