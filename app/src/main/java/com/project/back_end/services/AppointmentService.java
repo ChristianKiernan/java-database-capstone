@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.back_end.DTO.AppointmentDTO;
 import com.project.back_end.models.Appointment;
 import com.project.back_end.models.Doctor;
+import com.project.back_end.models.Patient;
 import com.project.back_end.repo.AppointmentRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
@@ -26,7 +28,6 @@ public class AppointmentService {
     private final DoctorRepository doctorRepository;
     private final TokenService tokenService;
 
-    // Constructor injection
     public AppointmentService(
             AppointmentRepository appointmentRepository,
             PatientRepository patientRepository,
@@ -39,10 +40,6 @@ public class AppointmentService {
         this.tokenService = tokenService;
     }
 
-    /**
-     * Books a new appointment.
-     * @return 1 if successful, 0 otherwise
-     */
     @Transactional
     public int bookAppointment(Appointment appointment) {
         try {
@@ -53,9 +50,6 @@ public class AppointmentService {
         }
     }
 
-    /**
-     * Updates an existing appointment after validating existence and rules.
-     */
     @Transactional
     public ResponseEntity<Map<String, String>> updateAppointment(Appointment appointment) {
         Map<String, String> res = new HashMap<>();
@@ -67,9 +61,6 @@ public class AppointmentService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
             }
 
-            // Validate the updated appointment (lab hint mentions: service.validateAppointment())
-            // If your project already has a shared Service class with validateAppointment(...),
-            // replace this with that call. Here we do minimal, safe checks.
             ResponseEntity<Map<String, String>> validation = validateAppointment(appointment);
             if (validation.getStatusCode().isError()) {
                 return validation;
@@ -85,9 +76,6 @@ public class AppointmentService {
         }
     }
 
-    /**
-     * Cancels (deletes) an appointment. Ensures the caller is authorized to cancel.
-     */
     @Transactional
     public ResponseEntity<Map<String, String>> cancelAppointment(long id, String token) {
         Map<String, String> res = new HashMap<>();
@@ -101,9 +89,6 @@ public class AppointmentService {
 
             Appointment appointment = apptOpt.get();
 
-            // Ensure patient attempting to cancel owns the appointment
-            // (TokenService extraction depends on your implementation; adjust as needed.)
-            
             Long patientIdFromToken = tokenService.extractUserId(token, "patient");
             if (patientIdFromToken == null) {
                 res.put("message", "Unauthorized.");
@@ -129,18 +114,21 @@ public class AppointmentService {
     /**
      * Retrieves appointments for the authenticated doctor on a given date,
      * optionally filtered by patient name.
+     *
+     * IMPORTANT:
+     * - Returns AppointmentDTOs (NOT Appointment entities) to avoid leaking sensitive fields
+     *   like patient.password and to match frontend expectations.
      */
     @Transactional(readOnly = true)
     public Map<String, Object> getAppointment(String pname, LocalDate date, String token) {
         Map<String, Object> res = new HashMap<>();
 
-        // Derive doctorId from token
         Long doctorId = tokenService.extractUserId(token, "doctor");
         if (doctorId == null) {
             res.put("message", "Unauthorized.");
+            res.put("appointments", List.of());
             return res;
         }
-
 
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay().minusNanos(1);
@@ -157,18 +145,33 @@ public class AppointmentService {
                     .findByDoctorIdAndAppointmentTimeBetween(doctorId, start, end);
         }
 
-        res.put("appointments", appointments);
+        // Map entities -> DTOs (prevents password leak + gives frontend flat fields)
+        List<AppointmentDTO> dtoList = appointments.stream()
+                .map(a -> {
+                    Doctor d = a.getDoctor();
+                    Patient p = a.getPatient();
+                    return new AppointmentDTO(
+                            a.getId(),
+                            d != null ? d.getId() : null,
+                            d != null ? d.getName() : null,
+                            p != null ? p.getId() : null,
+                            p != null ? p.getName() : null,
+                            p != null ? p.getEmail() : null,
+                            p != null ? p.getPhone() : null,
+                            p != null ? p.getAddress() : null,
+                            a.getAppointmentTime(),
+                            a.getStatus()
+                    );
+                })
+                .toList();
+
+        res.put("appointments", dtoList);
         return res;
     }
 
-    /**
-     * Minimal validation helper.
-     * If your project has a shared Service.validateAppointment(), replace this with that.
-     */
     private ResponseEntity<Map<String, String>> validateAppointment(Appointment appointment) {
         Map<String, String> res = new HashMap<>();
 
-        // Doctor must exist (if doctor is provided)
         if (appointment.getDoctor() == null || appointment.getDoctor().getId() == null) {
             res.put("message", "Invalid doctor.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -180,7 +183,6 @@ public class AppointmentService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
-        // Patient must exist (if patient is provided)
         if (appointment.getPatient() == null || appointment.getPatient().getId() == null) {
             res.put("message", "Invalid patient.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -191,7 +193,6 @@ public class AppointmentService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
         }
 
-        // Appointment time must exist
         if (appointment.getAppointmentTime() == null) {
             res.put("message", "Appointment time is required.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -200,4 +201,5 @@ public class AppointmentService {
         return ResponseEntity.ok(res);
     }
 }
+
 
