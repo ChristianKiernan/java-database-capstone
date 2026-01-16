@@ -1,6 +1,3 @@
-<!-- doctorDashboard.html -->
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,24 +6,23 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" th:href="@{/assets/images/logo/logo.png}" />
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" th:href="@{/css/adminDashboard.css}" />
-  <link rel="stylesheet" th:href="@{/css/doctorDashboard.css}" />
-  <link rel="stylesheet" th:href="@{/css/style.css}" />
+  <!-- Stylesheets (FIXED PATHS) -->
+  <link rel="stylesheet" th:href="@{/assets/css/adminDashboard.css}" />
+  <link rel="stylesheet" th:href="@{/assets/css/doctorDashboard.css}" />
+  <link rel="stylesheet" th:href="@{/assets/css/style.css}" />
 
-  <!-- Utility scripts -->
+  <!-- Utility scripts (non-module is fine) -->
   <script th:src="@{/js/render.js}" defer></script>
   <script th:src="@{/js/util.js}" defer></script>
 
-  <!-- Components -->
+  <!-- Components (non-module is fine IF they don't use import/export) -->
   <script th:src="@{/js/components/header.js}" defer></script>
   <script th:src="@{/js/components/footer.js}" defer></script>
-  <script th:src="@{/js/components/patientRows.js}" defer></script>
 
-  <!-- Services + main logic -->
-  <script th:src="@{/js/services/patientServices.js}" defer></script>
-  <script th:src="@{/js/doctorDashboard.js}" defer></script>
+  <!-- Main logic (MUST be module because it uses import/export) -->
+  <script type="module" th:src="@{/js/doctorDashboard.js}" defer></script>
 </head>
+
 
 <body onload="renderContent()">
   <div class="container">

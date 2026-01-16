@@ -1,34 +1,24 @@
 // patientServices.js
-// Centralized API communication for patient-related actions
-
 import { API_BASE_URL } from "../config/config.js";
 
-// Base endpoint for patient-related APIs
-const PATIENT_API = API_BASE_URL + "/patient";
+// IMPORTANT: API_BASE_URL should be "" for same-origin in your setup
+const PATIENT_API = `${API_BASE_URL}/patient`;
 
 /**
  * Patient Signup
- * - Accepts patient details
- * - Sends POST request to signup endpoint
- * - Returns { success, message }
+ * POST /patient
  */
 export async function patientSignup(data) {
   try {
-    // Send signup request
-    const res = await fetch(`${PATIENT_API}`, {
+    const res = await fetch(PATIENT_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    // Parse response JSON (if any)
     const result = await res.json().catch(() => ({}));
 
-    // Return structured response
-    if (res.ok) {
-      return { success: true, message: result.message || "Signup successful" };
-    }
-
+    if (res.ok) return { success: true, message: result.message || "Signup successful" };
     return { success: false, message: result.message || "Signup failed" };
   } catch (err) {
     console.error("patientSignup error:", err);
@@ -38,23 +28,16 @@ export async function patientSignup(data) {
 
 /**
  * Patient Login
- * - Accepts login credentials (email, password)
- * - Sends POST request to login endpoint
- * - Returns the full fetch response so UI can handle status/token
+ * POST /patient/login
  */
 export async function patientLogin(data) {
   try {
-    // Helpful during development (remove in production)
-    console.log("patientLogin payload:", data);
-
-    // Send login request
     const res = await fetch(`${PATIENT_API}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-
-    return res;
+    return res; // caller parses token, status, etc.
   } catch (err) {
     console.error("patientLogin error:", err);
     throw err;
@@ -62,25 +45,22 @@ export async function patientLogin(data) {
 }
 
 /**
- * Fetch Logged-in Patient Data
- * - Uses token to request patient profile/details
- * - Returns patient object or null on failure
+ * Logged-in Patient Profile
+ * GET /patient/{token}
+ *
+ * Backend validates token as "patient".
+ * Returns a ResponseEntity<Map<String,Object>> from patientService.getPatientDetails(token).
  */
 export async function getPatientData(token) {
   try {
-    // Request patient data
-    const res = await fetch(`${PATIENT_API}/me`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const res = await fetch(`${PATIENT_API}/${encodeURIComponent(token)}`);
     if (!res.ok) return null;
 
-    // Return patient object
-    const patient = await res.json();
-    return patient;
+    const data = await res.json();
+
+    // normalize: backend might return { patient: {...} } or direct patient fields
+    if (data?.patient) return data.patient;
+    return data;
   } catch (err) {
     console.error("getPatientData error:", err);
     return null;
@@ -88,68 +68,54 @@ export async function getPatientData(token) {
 }
 
 /**
- * Fetch Patient Appointments (shared for patient & doctor dashboards)
- * - id: patient id
- * - token: auth token
- * - user: "patient" or "doctor"
- * - Returns appointments array or null on failure
+ * Patient Appointments
+ * GET /patient/{id}/{token}
+ *
+ * Returns Map<String,Object> (likely { appointments: [...] }).
  */
-export async function getPatientAppointments(id, token, user) {
+export async function getPatientAppointments(id, token) {
   try {
-    // Build dynamic endpoint (supports role-based backend behavior)
-    const url = `${PATIENT_API}/${id}/appointments?user=${encodeURIComponent(user)}`;
+    const res = await fetch(
+      `${PATIENT_API}/${encodeURIComponent(id)}/${encodeURIComponent(token)}`
+    );
 
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    if (!res.ok) return [];
 
-    if (!res.ok) {
-      console.error("getPatientAppointments failed:", res.status);
-      return null;
-    }
+    const data = await res.json();
 
-    const appointments = await res.json();
-    return appointments;
+    // normalize
+    if (Array.isArray(data)) return data;
+    return data?.appointments ?? [];
   } catch (err) {
     console.error("getPatientAppointments error:", err);
-    return null;
+    return [];
   }
 }
 
 /**
- * Filter Appointments
- * - condition: e.g. "pending", "consulted"
- * - name: optional search term
- * - token: auth token
- * - Returns filtered list or [] on failure
+ * Filter Patient Appointments
+ * GET /patient/filter/{condition}/{name}/{token}
+ *
+ * condition and name can be "null"
  */
 export async function filterAppointments(condition, name, token) {
   try {
-    // Build query params safely
-    const params = new URLSearchParams();
-    if (condition) params.append("condition", condition);
-    if (name) params.append("name", name);
+    const c = condition ?? "null";
+    const n = name ?? "null";
 
-    const res = await fetch(`${PATIENT_API}/appointments/filter?${params.toString()}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await fetch(
+      `${PATIENT_API}/filter/${encodeURIComponent(c)}/${encodeURIComponent(n)}/${encodeURIComponent(token)}`
+    );
 
-    if (!res.ok) {
-      console.error("filterAppointments failed:", res.status);
-      return [];
-    }
+    if (!res.ok) return [];
 
-    const filtered = await res.json();
-    return filtered;
+    const data = await res.json();
+
+    // normalize
+    if (Array.isArray(data)) return data;
+    return data?.appointments ?? [];
   } catch (err) {
     console.error("filterAppointments error:", err);
-    alert("Unexpected error while filtering appointments. Please try again.");
     return [];
   }
 }

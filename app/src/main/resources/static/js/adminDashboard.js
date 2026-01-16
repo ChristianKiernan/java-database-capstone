@@ -1,5 +1,6 @@
+// /static/js/adminDashboard.js
 /*
-  This script handles the admin dashboard functionality for managing doctors:
+  Admin dashboard:
   - Loads all doctor cards
   - Filters doctors by name, time, or specialty
   - Adds a new doctor via modal form
@@ -9,79 +10,71 @@ import { openModal } from "/js/components/modals.js";
 import { getDoctors, filterDoctors, saveDoctor } from "/js/services/doctorServices.js";
 import { createDoctorCard } from "/js/components/doctorCard.js";
 
-/* Attach a click listener to the "Add Doctor" button */
+/* Attach listeners on page load */
 document.addEventListener("DOMContentLoaded", () => {
   const addBtn = document.getElementById("addDocBtn");
   if (addBtn) {
-    addBtn.addEventListener("click", () => {
-      openModal("addDoctor");
-    });
+    addBtn.addEventListener("click", () => openModal("addDoctor"));
   }
 
-  // Load doctor cards on page load
   loadDoctorCards();
 
-  // Attach search / filter listeners
   const searchBar = document.getElementById("searchBar");
-  const filterTime = document.getElementById("timeSort");
-  const filterSpecialty = document.getElementById("specialtyFilter");
+  const timeSort = document.getElementById("timeSort");
+  const specialtyFilter = document.getElementById("specialtyFilter");
 
   if (searchBar) searchBar.addEventListener("input", filterDoctorsOnChange);
-  if (filterTime) filterTime.addEventListener("change", filterDoctorsOnChange);
-  if (filterSpecialty) filterSpecialty.addEventListener("change", filterDoctorsOnChange);
+  if (timeSort) timeSort.addEventListener("change", filterDoctorsOnChange);
+  if (specialtyFilter) specialtyFilter.addEventListener("change", filterDoctorsOnChange);
 });
 
-/*
-  Function: loadDoctorCards
-  Purpose: Fetch all doctors and display them as cards
-*/
+/* Fetch doctors and render cards */
 async function loadDoctorCards() {
   try {
-    const result = await getDoctors();
-    const doctors = result?.doctors ?? [];
-    renderDoctorCards(doctors);
+    const result = await getDoctors(); // { doctors: [...] }
+    renderDoctorCards(result.doctors || []);
   } catch (err) {
     console.error("Error loading doctors:", err);
+    const contentDiv = document.getElementById("content");
+    if (contentDiv) contentDiv.innerHTML = "<p>Unable to load doctors right now.</p>";
   }
 }
 
-/*
-  Function: filterDoctorsOnChange
-  Purpose: Filter doctors based on name, available time, and specialty
-*/
+/* Filter doctors based on current inputs */
 async function filterDoctorsOnChange() {
   try {
-    const name = document.getElementById("searchBar")?.value?.trim() || null;
-    const time = document.getElementById("timeSort")?.value || null;
-    const specialty = document.getElementById("specialtyFilter")?.value || null;
+    // Your backend normalizes "null" path segments, so we send "null" when empty.
+    const nameVal = document.getElementById("searchBar")?.value?.trim() || "";
+    const timeVal = document.getElementById("timeSort")?.value || "";
+    const specialtyVal = document.getElementById("specialtyFilter")?.value || "";
 
-    const result = await filterDoctors(name, time, specialty);
-    const doctors = result?.doctors ?? [];
+    const name = nameVal.length ? nameVal : "null";
+    const time = timeVal.length ? timeVal : "null";
+    const specialty = specialtyVal.length ? specialtyVal : "null";
+
+    const result = await filterDoctors(name, time, specialty); // { doctors: [...] }
+    const doctors = result.doctors || [];
 
     if (doctors.length > 0) {
-        renderDoctorCards(doctors);
+      renderDoctorCards(doctors);
     } else {
-        const contentDiv = document.getElementById("content");
-        if (contentDiv) contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
+      const contentDiv = document.getElementById("content");
+      if (contentDiv) contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
     }
-
   } catch (err) {
-    console.error(err);
+    console.error("Filtering failed:", err);
     alert("Unable to filter doctors. Please try again.");
   }
 }
 
-/*
-  Function: renderDoctorCards
-  Purpose: Render a list of doctors passed to it
-*/
+/* Render doctor cards */
 function renderDoctorCards(doctors) {
   const contentDiv = document.getElementById("content");
   if (!contentDiv) return;
 
   contentDiv.innerHTML = "";
 
-  if (!doctors || doctors.length === 0) {
+  if (!Array.isArray(doctors) || doctors.length === 0) {
     contentDiv.innerHTML = "<p>No doctors found</p>";
     return;
   }
@@ -93,22 +86,26 @@ function renderDoctorCards(doctors) {
 }
 
 /*
-  Function: adminAddDoctor
-  Purpose: Collect form data and add a new doctor to the system
-  NOTE: This function is meant to be called from the modal submit button.
+  Called by modal Save button:
+  In modals.js you do:
+    btn.addEventListener("click", window.adminAddDoctor);
 */
 window.adminAddDoctor = async function adminAddDoctor() {
   try {
-    const name = document.getElementById("doctorName")?.value?.trim();
-    const email = document.getElementById("doctorEmail")?.value?.trim();
-    const phone = document.getElementById("doctorPhone")?.value?.trim();
-    const password = document.getElementById("doctorPassword")?.value?.trim();
-    const specialty = document.getElementById("specialization")?.value?.trim();
+    const name = document.getElementById("doctorName")?.value?.trim() || "";
+    const email = document.getElementById("doctorEmail")?.value?.trim() || "";
+    const phone = document.getElementById("doctorPhone")?.value?.trim() || "";
+    const password = document.getElementById("doctorPassword")?.value?.trim() || "";
+    const specialty = document.getElementById("specialization")?.value?.trim() || "";
 
-    // Collect checkbox values for availability
     const availability = Array.from(
       document.querySelectorAll("input[name='availability']:checked")
     ).map((cb) => cb.value);
+
+    if (!name || !email || !phone || !password || !specialty) {
+      alert("Please fill out all doctor fields.");
+      return;
+    }
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -122,16 +119,14 @@ window.adminAddDoctor = async function adminAddDoctor() {
 
     if (result.success) {
       alert(result.message || "Doctor added successfully.");
-      // Close modal if present
       const modal = document.getElementById("modal");
       if (modal) modal.classList.add("hidden");
-      // Refresh list
       await loadDoctorCards();
     } else {
       alert(result.message || "Failed to add doctor.");
     }
   } catch (err) {
-    console.error(err);
+    console.error("Add doctor failed:", err);
     alert("Something went wrong while adding the doctor.");
   }
-}
+};
